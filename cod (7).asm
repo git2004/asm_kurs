@@ -6,7 +6,7 @@ B 		db 	1024 DUP(?)
 _COM 	db 	'com.com',0
 _VIVOD	db 	'vivod.asm',0
 _AAA 	db 	9,'AAA',13,10,'$'
-_RCL	db	9,'RCL',9, 45 DUP (?)
+_ROL	db	9,'ROL',9, 45 DUP (?)
 _MOV	db	9,'MOV',9, 45 DUP (?) 
 rgstr	db	30 DUP (?)
 temp_al	db	0
@@ -24,6 +24,7 @@ seg_table	dw offset seg0, offset seg1, offset seg2, offset seg3
            dw offset seg4, offset seg5
 .code
 start:
+	movsx   ecx, ch
 	mov 	ax,@data
 	mov 	ds,ax
 	mov	es,ax
@@ -103,17 +104,17 @@ n9:
 	pop ax
 	
 	jne n10
-	jmp CHECK_RCL_D
+	jmp CHECK_ROL_D
 n10:
 	cmp	al,0C0h
 	jne n11
 	mov [temp_cl],0
-	jmp	RCL_C
+	jmp	ROL_C
 n11:
 	cmp al,0C1h
 	jne n12
 	mov [temp_cl],1
-	jmp	RCL_C
+	jmp	ROL_C
 n12:
 	push ax
 	and al,0F0h
@@ -150,7 +151,7 @@ n16:
 	jmp	MOV_C6_C7
 n17:
 	jmp exit
-CHECK_RCL_D: ;-------------------------Блок для считывания команды RCL_D
+CHECK_ROL_D: ;-------------------------Блок для считывания команды ROL_D
 	mov [temp_di], al
 	cmp	al,0D4h
 	jna d1
@@ -160,20 +161,20 @@ d1:
 	cmp al,0
 	jne d2
 	mov [temp_cl],0
-	jmp RCL_D
+	jmp ROL_D
 d2:
 	cmp al,1
 	jne d3
 	mov [temp_cl],1
-	jmp RCL_D
+	jmp ROL_D
 d3:
 	cmp al,2
 	jne d4
 	mov [temp_cl],0
-	jmp RCL_D
+	jmp ROL_D
 d4:
 	mov [temp_cl],1
-	jmp RCL_D
+	jmp ROL_D
 
 CHECK_MOV_B: ;-------------------------Блок для считвания команды MOV_B
 	lea bx,_MOV + 5
@@ -880,28 +881,28 @@ COM_AAA:
 	
 	jmp	nachalo
 
-;--------------------------------------------RCL
+;--------------------------------------------ROL
 	
-RCL_C:
+ROL_C:
 	lodsb
 	
 	mov [temp_al],al
 	and al,0C0h
 	cmp al,0C0h
 	jne rcmod1
-	jmp RCL_C_md11
+	jmp ROL_C_md11
 rcmod1:
 	cmp al,080h
 	jne rcmod2
-	jmp RCL_C_md10
+	jmp ROL_C_md10
 rcmod2:
 	cmp al,040h
 	jne rcmod3
-	jmp RCL_C_md01
+	jmp ROL_C_md01
 rcmod3:
-	jmp RCL_C_md00
+	jmp ROL_C_md00
 
-RCL_C_md11:
+ROL_C_md11:
 	mov al,[temp_al]
 	
 	and	al,7
@@ -909,7 +910,7 @@ RCL_C_md11:
     shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
     call [jump_table + bx]
 	
-	lea bx,_RCL + 5
+	lea bx,_ROL + 5
 	cmp bp,1
 	jb rc_reg8_16
 	mov byte ptr [bx],'E'
@@ -932,32 +933,32 @@ rc_reg8_16:
 	mov	cx,14
 	add cx,bp
 	xor bp,bp
-	lea	dx,_RCL
+	lea	dx,_ROL
 	
 	call vivod
 	
 	jmp nachalo
 
-RCL_C_md10:
+ROL_C_md10:
 	mov al, [temp_al]
 	
-	lea	bx,_RCL + 5
+	lea	bx,_ROL + 5
 	call find_ptr
 	cmp bp,2
-	jae mem_rcl_md10_32
+	jae mem_ROL_md10_32
 	call mem_16
 	jmp mem_cont_md10
-mem_rcl_md10_32:
+mem_ROL_md10_32:
 	call mem_32
 mem_cont_md10:
 	mov di,cx
 	
 	cmp byte ptr [sib_ind], 1
-	jne rcl_c_md10_disp
+	jne ROL_c_md10_disp
 	call check_ss
-rcl_c_md10_disp:
+ROL_c_md10_disp:
 	cmp bp,2
-	jb rcl_c_md10_disp16
+	jb ROL_c_md10_disp16
 	
 	lodsb
 	
@@ -987,8 +988,8 @@ rcl_c_md10_disp:
 	mov [bx+di+2],ax
 	mov byte ptr [bx+di+1], '0'
 	add di, 14
-	jmp rcl_c_md10_disp16_cont
-rcl_c_md10_disp16:
+	jmp ROL_c_md10_disp16_cont
+ROL_c_md10_disp16:
 	lodsb
 	
 	call hex2sym
@@ -1005,7 +1006,7 @@ rcl_c_md10_disp16:
 	mov [bx+di+2],ax
 	mov byte ptr [bx+di+1], '0'
 	add di,10
-rcl_c_md10_disp16_cont:
+ROL_c_md10_disp16_cont:
 	lodsb
 	
 	call hex2sym
@@ -1017,24 +1018,24 @@ rcl_c_md10_disp16_cont:
 	
 	add di,11
 	jmp rc_viv
-RCL_C_md01:
+ROL_C_md01:
 	mov al,[temp_al]
 	
-	lea	bx,_RCL + 5
+	lea	bx,_ROL + 5
 	call find_ptr
 	cmp bp,2
-	jae mem_rcl_md01_32
+	jae mem_ROL_md01_32
 	call mem_16
 	jmp mem_cont_md01
-mem_rcl_md01_32:
+mem_ROL_md01_32:
 	call mem_32
 mem_cont_md01:
 	mov di,cx
 	
 	cmp byte ptr [sib_ind], 1
-	jne rcl_c_md01_disp
+	jne ROL_c_md01_disp
 	call check_ss
-rcl_c_md01_disp:
+ROL_c_md01_disp:
 	lodsb
 	
 	call hex2sym
@@ -1056,24 +1057,24 @@ rcl_c_md01_disp:
 	
 	add di,19
 	jmp rc_viv
-RCL_C_md00:
+ROL_C_md00:
 	mov al,[temp_al]
 	
-	lea	bx,_RCL + 5
+	lea	bx,_ROL + 5
 	call find_ptr
 	cmp bp,2
-	jae mem_rcl_md00_32
+	jae mem_ROL_md00_32
 	call mem_16
 	jmp mem_cont_md00
-mem_rcl_md00_32: 
+mem_ROL_md00_32: 
 	call mem_32
 mem_cont_md00:
 	mov di,cx
 	
 	cmp byte ptr [sib_ind], 1
-	jne rcl_c_md00_disp
+	jne ROL_c_md00_disp
 	call check_ss
-rcl_c_md00_disp:
+ROL_c_md00_disp:
 	mov byte ptr [bx+di],']'
 	mov word ptr [bx+di+1],' ,'
 
@@ -1092,7 +1093,7 @@ rc_viv:
 	add cx, [temp_pref]
 	add cx, word ptr [_ptr_]
 	add cx, word ptr [sib_ind]
-	lea	dx,_RCL
+	lea	dx,_ROL
 	xor bp,bp
 	mov word ptr [sib_ind], 00000h
 	mov word ptr [temp_pref], 0h
@@ -1100,26 +1101,26 @@ rc_viv:
 	call vivod
 
 	jmp	nachalo	
-;-----------------------------RCL_D	
-RCL_D:
+;-----------------------------ROL_D	
+ROL_D:
 	lodsb
 	mov [temp_al], al
 	and al,0C0h
 	cmp al,0C0h
 	jne rdmod1
-	jmp RCL_D_md11
+	jmp ROL_D_md11
 rdmod1:
 	cmp al,080h
 	jne rdmod2
-	jmp RCL_D_md10
+	jmp ROL_D_md10
 rdmod2:
 	cmp al,040h
 	jne rdmod3
-	jmp RCL_D_md01
+	jmp ROL_D_md01
 rdmod3:
-	jmp RCL_D_md00
+	jmp ROL_D_md00
 	
-RCL_D_md11:	
+ROL_D_md11:	
 	mov al, [temp_al]
 	
 	and	al,7
@@ -1127,7 +1128,7 @@ RCL_D_md11:
     shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
     call [jump_table + bx]
 	
-	lea	bx,_RCL + 5
+	lea	bx,_ROL + 5
 	cmp bp,1
 	jb rd1_reg8_16
 	mov byte ptr [bx],'E'
@@ -1150,32 +1151,32 @@ rd_md_11_viv:
 	mov [bx+6],0A0Dh
 
 	mov	cx,13
-	lea	dx,_RCL
+	lea	dx,_ROL
 	xor bp,bp
 	
 	call vivod
 
 	jmp	nachalo	
-RCL_D_md10:
+ROL_D_md10:
 	mov al, [temp_al]
 	
-	lea	bx,_RCL + 5
+	lea	bx,_ROL + 5
 	call find_ptr
 	cmp bp,0
-	jne mem_rcl_d_md10_32
+	jne mem_ROL_d_md10_32
 	call mem_16
 	jmp mem_cont_d_md10
-mem_rcl_d_md10_32:
+mem_ROL_d_md10_32:
 	call mem_32
 mem_cont_d_md10:
 	
 	mov di,cx
 	cmp byte ptr [sib_ind], 1
-	jne rcl_d_md10_disp
+	jne ROL_d_md10_disp
 	call check_ss
-rcl_d_md10_disp:
+ROL_d_md10_disp:
 	cmp bp,2
-	jb rcl_d_md10_disp16
+	jb ROL_d_md10_disp16
 	
 	lodsb
 	
@@ -1205,8 +1206,8 @@ rcl_d_md10_disp:
 	mov [bx+di+2],ax
 	mov byte ptr [bx+di+1], '0'
 	add di, 14
-	jmp rcl_d_md10_disp16_cont
-rcl_d_md10_disp16:
+	jmp ROL_d_md10_disp16_cont
+ROL_d_md10_disp16:
 	lodsb
 	
 	call hex2sym
@@ -1223,7 +1224,7 @@ rcl_d_md10_disp16:
 	mov [bx+di+2],ax
 	mov byte ptr [bx+di+1], '0'
 	add di,10
-rcl_d_md10_disp16_cont:
+ROL_d_md10_disp16_cont:
 	
 	mov al, byte ptr [temp_di]
 	cmp al,0D2h
@@ -1239,16 +1240,16 @@ rd5:
 	add di,4
 	jmp rd_viv
 	
-RCL_D_md01:
+ROL_D_md01:
 	mov al, [temp_al]
 	
-	lea	bx,_RCL + 5
+	lea	bx,_ROL + 5
 	call find_ptr
 	cmp bp,0
-	jne mem_rcl_d_md01_32
+	jne mem_ROL_d_md01_32
 	call mem_16
 	jmp mem_cont_d_md01
-mem_rcl_d_md01_32:
+mem_ROL_d_md01_32:
 	call mem_32
 mem_cont_d_md01:
 	lodsb
@@ -1259,9 +1260,9 @@ mem_cont_d_md01:
 	mov di,cx
 	
 	cmp byte ptr [sib_ind], 1
-	jne rcl_d_md01_disp
+	jne ROL_d_md01_disp
 	call check_ss
-rcl_d_md01_disp:
+ROL_d_md01_disp:
 	pop ax
 	
 	mov byte ptr [bx+di], '+'
@@ -1284,24 +1285,24 @@ rd4:
 	add di,12
 	jmp rd_viv
 	
-RCL_D_md00:
+ROL_D_md00:
 	mov al, [temp_al]
 	
-	lea	bx,_RCL + 5
+	lea	bx,_ROL + 5
 	call find_ptr
 	cmp bp,0
-	jne mem_rcl_d_md00_32
+	jne mem_ROL_d_md00_32
 	call mem_16
 	jmp mem_cont_d_md00
-mem_rcl_d_md00_32:
+mem_ROL_d_md00_32:
 	call mem_32
 mem_cont_d_md00:
 	mov di,cx
 	
 	cmp byte ptr [sib_ind], 1
-	jne rcl_d_md00_disp
+	jne ROL_d_md00_disp
 	call check_ss
-rcl_d_md00_disp:
+ROL_d_md00_disp:
 	mov byte ptr [bx+di],']'
 	mov word ptr [bx+di+1],' ,'
 	
@@ -1323,7 +1324,7 @@ rd_viv:
 	add cx, [temp_pref]
 	add cx, word ptr [_ptr_]
 	add cx, word ptr [sib_ind]
-	lea	dx,_RCL
+	lea	dx,_ROL
 	xor bp,bp
 	mov word ptr [sib_ind], 00000h
 	mov word ptr [temp_pref], 0h
