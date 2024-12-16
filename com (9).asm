@@ -36,17 +36,17 @@ MOV SI, ES:[BP+SI]
 MOV DI, CS:[DI]
 
 MOV [EBP+10], ESI 
-RCL dword ptr [EBP+10], 10h 
-RCL dword ptr ss:[EDX+EAX+200],15h
-RCL dword ptr es:[ESI+EBP*4+17000],1h
-RCL word ptr ss:[EDX+EAX+200],CL
+ROL dword ptr [EBP+10], 10h 
+ROL dword ptr ss:[EDX+EAX+200],15h
+ROL dword ptr es:[ESI+EBP*4+17000],1h
+ROL word ptr ss:[EDX+EAX+200],CL
 
 MOV ss:[EDX+EAX+200],ECX
 MOV es:[ESI+EBP*4+17000],EBX
 MOV ss:[EDX+EAX+200],CX
 
-RCL byte ptr ss:[BX+SI], 10h
-		db	0C0h, 016h, 0h, 10h, 30h;RCL byte ptr [1000h], 30h
+ROL byte ptr ss:[BX+SI], 10h
+		db	0C0h, 016h, 0h, 10h, 30h;ROL byte ptr [1000h], 30h
 		
 MOV EAX,[BX+1010h]
 MOV EAX,[EAX+1010h]
@@ -63,197 +63,197 @@ MOV EAX,[EAX+10h]
 	db	088h,037h	;MOV [BX],DH 
 MOV [BX], AL
 ;//////////////////////
-;//////////////////////Проверка на регистры с RCL
-RCL AL, 1h
-RCL CL, 1h
-RCL DL, 1h
-RCL BL, 1h
-RCL AH, 1h
-RCL CH, 1h
-RCL DH, 1h
-RCL BH, 1h
+;//////////////////////Проверка на регистры с ROL
+ROL AL, 1h
+ROL CL, 1h
+ROL DL, 1h
+ROL BL, 1h
+ROL AH, 1h
+ROL CH, 1h
+ROL DH, 1h
+ROL BH, 1h
 
-RCL AL, CL
-RCL CL, CL
-RCL DL, CL
-RCL BL, CL
-RCL AH, CL
-RCL CH, CL
-RCL DH, CL
-RCL BH, CL
+ROL AL, CL
+ROL CL, CL
+ROL DL, CL
+ROL BL, CL
+ROL AH, CL
+ROL CH, CL
+ROL DH, CL
+ROL BH, CL
 
-RCL AL, 15h
-RCL CL, 15h
-RCL DL, 15h
-RCL BL, 15h
-RCL AH, 15h
-RCL CH, 15h
-RCL DH, 15h
-RCL BH, 15h
+ROL AL, 15h
+ROL CL, 15h
+ROL DL, 15h
+ROL BL, 15h
+ROL AH, 15h
+ROL CH, 15h
+ROL DH, 15h
+ROL BH, 15h
 
-RCL AX, 1h
-RCL CX, 1h
-RCL DX, 1h
-RCL BX, 1h
-RCL SP, 1h
-RCL BP, 1h
-RCL SI, 1h
-RCL DI, 1h
+ROL AX, 1h
+ROL CX, 1h
+ROL DX, 1h
+ROL BX, 1h
+ROL SP, 1h
+ROL BP, 1h
+ROL SI, 1h
+ROL DI, 1h
 
-RCL AX, CL
-RCL CX, CL
-RCL DX, CL
-RCL BX, CL
-RCL SP, CL
-RCL BP, CL
-RCL SI, CL
-RCL DI, CL
+ROL AX, CL
+ROL CX, CL
+ROL DX, CL
+ROL BX, CL
+ROL SP, CL
+ROL BP, CL
+ROL SI, CL
+ROL DI, CL
 
-RCL AX, 16h
-RCL CX, 16h
-RCL DX, 16h
-RCL BX, 16h
-RCL SP, 16h
-RCL BP, 16h
-RCL SI, 16h
-RCL DI, 16h
+ROL AX, 16h
+ROL CX, 16h
+ROL DX, 16h
+ROL BX, 16h
+ROL SP, 16h
+ROL BP, 16h
+ROL SI, 16h
+ROL DI, 16h
 
-RCL EAX, 1h
-RCL ECX, 1h
-RCL EDX, 1h
-RCL EBX, 1h
-RCL ESP, 1h
-RCL EBP, 1h
-RCL ESI, 1h
-RCL EDI, 1h
+ROL EAX, 1h
+ROL ECX, 1h
+ROL EDX, 1h
+ROL EBX, 1h
+ROL ESP, 1h
+ROL EBP, 1h
+ROL ESI, 1h
+ROL EDI, 1h
 
-RCL EAX, CL
-RCL ECX, CL
-RCL EDX, CL
-RCL EBX, CL
-RCL ESP, CL
-RCL EBP, CL
-RCL ESI, CL
-RCL EDI, CL
+ROL EAX, CL
+ROL ECX, CL
+ROL EDX, CL
+ROL EBX, CL
+ROL ESP, CL
+ROL EBP, CL
+ROL ESI, CL
+ROL EDI, CL
 
-RCL EAX, 17h
-RCL ECX, 17h
-RCL EDX, 17h
-RCL EBX, 17h
-RCL ESP, 17h
-RCL EBP, 17h
-RCL ESI, 17h
-RCL EDI, 17h
+ROL EAX, 17h
+ROL ECX, 17h
+ROL EDX, 17h
+ROL EBX, 17h
+ROL ESP, 17h
+ROL EBP, 17h
+ROL ESI, 17h
+ROL EDI, 17h
 ;//////////////////////
-;//////////////////////Проверка на byte/word/dword ptr с RCL
-RCL byte ptr [BX], 1h
-RCL word ptr [BX], 1h
-RCL dword ptr [BX], 1h
+;//////////////////////Проверка на byte/word/dword ptr с ROL
+ROL byte ptr [BX], 1h
+ROL word ptr [BX], 1h
+ROL dword ptr [BX], 1h
 
-RCL byte ptr [BX], CL
-RCL word ptr [BX], CL
-RCL dword ptr [BX], CL
+ROL byte ptr [BX], CL
+ROL word ptr [BX], CL
+ROL dword ptr [BX], CL
 
-RCL byte ptr [BX], 10h
-RCL word ptr [BX], 10h
-RCL dword ptr [BX], 10h
+ROL byte ptr [BX], 10h
+ROL word ptr [BX], 10h
+ROL dword ptr [BX], 10h
 ;//////////////////////
-;//////////////////////Проверка на 16-ти разрядную память с RCL
-RCL byte ptr [BX+SI], 1h
-RCL byte ptr [BX+DI], 1h
-RCL byte ptr [BP+SI], 1h
-RCL byte ptr [BP+DI], 1h
-RCL byte ptr [SI], 1h
-RCL byte ptr [DI], 1h
-	db	0D0h, 016h, 0h, 10h ;RCL byte ptr [1000h], 1h
-RCL byte ptr [BX], 1h
+;//////////////////////Проверка на 16-ти разрядную память с ROL
+ROL byte ptr [BX+SI], 1h
+ROL byte ptr [BX+DI], 1h
+ROL byte ptr [BP+SI], 1h
+ROL byte ptr [BP+DI], 1h
+ROL byte ptr [SI], 1h
+ROL byte ptr [DI], 1h
+	db	0D0h, 016h, 0h, 10h ;ROL byte ptr [1000h], 1h
+ROL byte ptr [BX], 1h
 
-	db	0D0h, 050h, 0C8h ; RCL byte ptr [BX+SI+0C8h], 1h
-	db	0D0h, 051h, 0C8h ; RCL byte ptr [BX+DI+0C8h], 1h
-	db	0D0h, 052h, 0C8h ; RCL byte ptr [BP+SI+0C8h], 1h
-	db	0D0h, 053h, 0C8h ; RCL byte ptr [BP+DI+0C8h], 1h
-	db	0D0h, 054h, 0C8h ; RCL byte ptr [SI+0C8h], 1h
-	db	0D0h, 055h, 0C8h ; RCL byte ptr [DI+0C8h], 1h
-	db	0D0h, 056h, 0C8h ; RCL byte ptr [BP+0C8h], 1h
-	db	0D0h, 057h, 0C8h ; RCL byte ptr [BX+0C8h], 1h
+	db	0D0h, 050h, 0C8h ; ROL byte ptr [BX+SI+0C8h], 1h
+	db	0D0h, 051h, 0C8h ; ROL byte ptr [BX+DI+0C8h], 1h
+	db	0D0h, 052h, 0C8h ; ROL byte ptr [BP+SI+0C8h], 1h
+	db	0D0h, 053h, 0C8h ; ROL byte ptr [BP+DI+0C8h], 1h
+	db	0D0h, 054h, 0C8h ; ROL byte ptr [SI+0C8h], 1h
+	db	0D0h, 055h, 0C8h ; ROL byte ptr [DI+0C8h], 1h
+	db	0D0h, 056h, 0C8h ; ROL byte ptr [BP+0C8h], 1h
+	db	0D0h, 057h, 0C8h ; ROL byte ptr [BX+0C8h], 1h
 
-RCL byte ptr [BX+SI+0C8C7h], 1h
-RCL byte ptr [BX+DI+0C8C7h], 1h
-RCL byte ptr [BP+SI+0C8C7h], 1h
-RCL byte ptr [BP+DI+0C8C7h], 1h
-RCL byte ptr [SI+0C8C7h], 1h
-RCL byte ptr [DI+0C8C7h], 1h
-RCL byte ptr [BP+0C8C7h], 1h
-RCL byte ptr [BX+0C8C7h], 1h
+ROL byte ptr [BX+SI+0C8C7h], 1h
+ROL byte ptr [BX+DI+0C8C7h], 1h
+ROL byte ptr [BP+SI+0C8C7h], 1h
+ROL byte ptr [BP+DI+0C8C7h], 1h
+ROL byte ptr [SI+0C8C7h], 1h
+ROL byte ptr [DI+0C8C7h], 1h
+ROL byte ptr [BP+0C8C7h], 1h
+ROL byte ptr [BX+0C8C7h], 1h
 
-RCL byte ptr [BX+SI], CL
-RCL byte ptr [BX+DI], CL
-RCL byte ptr [BP+SI], CL
-RCL byte ptr [BP+DI], CL
-RCL byte ptr [SI], CL
-RCL byte ptr [DI], CL
-	db	0D2h, 016h, 0h, 10h ;RCL byte ptr [1000h], CL
-RCL byte ptr [BX], CL
+ROL byte ptr [BX+SI], CL
+ROL byte ptr [BX+DI], CL
+ROL byte ptr [BP+SI], CL
+ROL byte ptr [BP+DI], CL
+ROL byte ptr [SI], CL
+ROL byte ptr [DI], CL
+	db	0D2h, 016h, 0h, 10h ;ROL byte ptr [1000h], CL
+ROL byte ptr [BX], CL
 
-	db	0D2h, 050h, 0C8h ; RCL byte ptr [BX+DI+0C8h], CL
-	db	0D2h, 051h, 0C8h ; RCL byte ptr [BP+SI+0C8h], CL
-	db	0D2h, 052h, 0C8h ; RCL byte ptr [BP+SI+0C8h], CL
-	db	0D2h, 053h, 0C8h ; RCL byte ptr [BP+DI+0C8h], CL
-	db	0D2h, 054h, 0C8h ; RCL byte ptr [SI+0C8h], CL
-	db	0D2h, 055h, 0C8h ; RCL byte ptr [DI+0C8h], CL
-	db	0D2h, 056h, 0C8h ; RCL byte ptr [BP+0C8h], CL
-	db	0D2h, 057h, 0C8h ; RCL byte ptr [BX+0C8h], CL
+	db	0D2h, 050h, 0C8h ; ROL byte ptr [BX+DI+0C8h], CL
+	db	0D2h, 051h, 0C8h ; ROL byte ptr [BP+SI+0C8h], CL
+	db	0D2h, 052h, 0C8h ; ROL byte ptr [BP+SI+0C8h], CL
+	db	0D2h, 053h, 0C8h ; ROL byte ptr [BP+DI+0C8h], CL
+	db	0D2h, 054h, 0C8h ; ROL byte ptr [SI+0C8h], CL
+	db	0D2h, 055h, 0C8h ; ROL byte ptr [DI+0C8h], CL
+	db	0D2h, 056h, 0C8h ; ROL byte ptr [BP+0C8h], CL
+	db	0D2h, 057h, 0C8h ; ROL byte ptr [BX+0C8h], CL
 
-RCL byte ptr [BX+SI+0C8C7h], CL
-RCL byte ptr [BX+DI+0C8C7h], CL
-RCL byte ptr [BP+SI+0C8C7h], CL
-RCL byte ptr [BP+DI+0C8C7h], CL
-RCL byte ptr [SI+0C8C7h], CL
-RCL byte ptr [DI+0C8C7h], CL
-RCL byte ptr [BP+0C8C7h], CL
-RCL byte ptr [BX+01000h], CL
+ROL byte ptr [BX+SI+0C8C7h], CL
+ROL byte ptr [BX+DI+0C8C7h], CL
+ROL byte ptr [BP+SI+0C8C7h], CL
+ROL byte ptr [BP+DI+0C8C7h], CL
+ROL byte ptr [SI+0C8C7h], CL
+ROL byte ptr [DI+0C8C7h], CL
+ROL byte ptr [BP+0C8C7h], CL
+ROL byte ptr [BX+01000h], CL
 
-RCL byte ptr [BX+SI], 015h
-RCL byte ptr [BX+DI], 015h
-RCL byte ptr [BP+SI], 015h
-RCL byte ptr [BP+DI], 015h
-RCL byte ptr [SI], 015h
-RCL byte ptr [DI], 015h
-	db	0C0h, 016h, 0h, 10h, 30h;RCL byte ptr [1000h], 30h
-RCL byte ptr [BX], 015h
+ROL byte ptr [BX+SI], 015h
+ROL byte ptr [BX+DI], 015h
+ROL byte ptr [BP+SI], 015h
+ROL byte ptr [BP+DI], 015h
+ROL byte ptr [SI], 015h
+ROL byte ptr [DI], 015h
+	db	0C0h, 016h, 0h, 10h, 30h;ROL byte ptr [1000h], 30h
+ROL byte ptr [BX], 015h
 
-	db	0C0h, 050h, 0C8h, 015h ; RCL byte ptr [BX+SI+0C8h], 15h
-	db	0C0h, 051h, 0C8h, 015h ; RCL byte ptr [BX+DI+0C8h], 15h
-	db	0C0h, 052h, 0C8h, 015h ; RCL byte ptr [BP+SI+0C8h], 15h
-	db	0C0h, 053h, 0C8h, 015h ; RCL byte ptr [BP+DI+0C8h], 15h
-	db	0C0h, 054h, 0C8h, 015h ; RCL byte ptr [SI+0C8h], 15h
-	db	0C0h, 055h, 0C8h, 015h ; RCL byte ptr [DI+0C8h], 15h
-	db	0C0h, 056h, 0C8h, 015h ; RCL byte ptr [BP+0C8h], 15h
-	db	0C0h, 057h, 0C8h, 015h ; RCL byte ptr [BX+0C8h], 15h
+	db	0C0h, 050h, 0C8h, 015h ; ROL byte ptr [BX+SI+0C8h], 15h
+	db	0C0h, 051h, 0C8h, 015h ; ROL byte ptr [BX+DI+0C8h], 15h
+	db	0C0h, 052h, 0C8h, 015h ; ROL byte ptr [BP+SI+0C8h], 15h
+	db	0C0h, 053h, 0C8h, 015h ; ROL byte ptr [BP+DI+0C8h], 15h
+	db	0C0h, 054h, 0C8h, 015h ; ROL byte ptr [SI+0C8h], 15h
+	db	0C0h, 055h, 0C8h, 015h ; ROL byte ptr [DI+0C8h], 15h
+	db	0C0h, 056h, 0C8h, 015h ; ROL byte ptr [BP+0C8h], 15h
+	db	0C0h, 057h, 0C8h, 015h ; ROL byte ptr [BX+0C8h], 15h
 
-RCL byte ptr [BX+SI+0C8C7h], 15h
-RCL byte ptr [BX+DI+0C8C7h], 15h
-RCL byte ptr [BP+SI+0C8C7h], 15h
-RCL byte ptr [BP+DI+0C8C7h], 15h
-RCL byte ptr [SI+0C8C7h], 15h
-RCL byte ptr [DI+0C8C7h], 15h
-RCL byte ptr [BP+0C8C7h], 15h
-RCL byte ptr [BX+0C8C7h], 15h
+ROL byte ptr [BX+SI+0C8C7h], 15h
+ROL byte ptr [BX+DI+0C8C7h], 15h
+ROL byte ptr [BP+SI+0C8C7h], 15h
+ROL byte ptr [BP+DI+0C8C7h], 15h
+ROL byte ptr [SI+0C8C7h], 15h
+ROL byte ptr [DI+0C8C7h], 15h
+ROL byte ptr [BP+0C8C7h], 15h
+ROL byte ptr [BX+0C8C7h], 15h
 ;//////////////////////
-;//////////////////////Проверка на сегменты памяти с RCL
-RCL byte ptr ds:[BX], 1h
-RCL byte ptr ss:[BX], 1h
-RCL byte ptr cs:[BX], 1h
-RCL byte ptr es:[BX], 1h
-RCL word ptr fs:[BX], 1h
-RCL dword ptr gs:[BX], 1h
+;//////////////////////Проверка на сегменты памяти с ROL
+ROL byte ptr ds:[BX], 1h
+ROL byte ptr ss:[BX], 1h
+ROL byte ptr cs:[BX], 1h
+ROL byte ptr es:[BX], 1h
+ROL word ptr fs:[BX], 1h
+ROL dword ptr gs:[BX], 1h
 
-RCL byte ptr ds:[BX], 15h
-RCL byte ptr ss:[BX], 15h
-RCL byte ptr cs:[BX], 15h
-RCL byte ptr es:[BX], 15h
-RCL word ptr fs:[BX], 15h
-RCL dword ptr gs:[BX], 15h
+ROL byte ptr ds:[BX], 15h
+ROL byte ptr ss:[BX], 15h
+ROL byte ptr cs:[BX], 15h
+ROL byte ptr es:[BX], 15h
+ROL word ptr fs:[BX], 15h
+ROL dword ptr gs:[BX], 15h
 ;//////////////////////
 ;//////////////////////Проверка MOV с опкодом B0-BF
 MOV AL, 0B0h
@@ -307,21 +307,21 @@ MOV EAX,10090807h
 MOV AL, 5
 	db	0C6h,0C0h,00h	;MOV al,0
 ;//////////////////////
-;//////////////////////Проверка на байт SIB с RCL
-RCL	word ptr [EAX+ECX*2+10h], 15h
-RCL	word ptr [ECX+ECX*4+10h], 15h
-RCL	word ptr [EDX+ECX*8+10h], 15h
-RCL	word ptr [EBX+ECX*4+10h], 15h
-RCL	word ptr [ESP+ECX*8+10h], 15h
-RCL	word ptr [ESI+ECX*2+10h], 15h
-RCL	word ptr [EDI+ECX*2+10h], 15h
-	db	067h, 0C1h, 14h, 00h, 10h  ;RCL word ptr [EAX+EAX],10h (sib)
-RCL word ptr [EBP+10h+EBX], 10h
-RCL word ptr [EBP+10h+EBX], 10h
-RCL dword ptr [EBP+10h+EBX], 10h
-RCL word ptr [ESP+10h+EBX], 10h
-RCL word ptr [EBP+10h+EBX], 1h
-RCL word ptr [EBP+10h+EBX], CL
+;//////////////////////Проверка на байт SIB с ROL
+ROL	word ptr [EAX+ECX*2+10h], 15h
+ROL	word ptr [ECX+ECX*4+10h], 15h
+ROL	word ptr [EDX+ECX*8+10h], 15h
+ROL	word ptr [EBX+ECX*4+10h], 15h
+ROL	word ptr [ESP+ECX*8+10h], 15h
+ROL	word ptr [ESI+ECX*2+10h], 15h
+ROL	word ptr [EDI+ECX*2+10h], 15h
+	db	067h, 0C1h, 14h, 00h, 10h  ;ROL word ptr [EAX+EAX],10h (sib)
+ROL word ptr [EBP+10h+EBX], 10h
+ROL word ptr [EBP+10h+EBX], 10h
+ROL dword ptr [EBP+10h+EBX], 10h
+ROL word ptr [ESP+10h+EBX], 10h
+ROL word ptr [EBP+10h+EBX], 1h
+ROL word ptr [EBP+10h+EBX], CL
 ;//////////////////////
 ;//////////////////////Проверка на MOV с опкодом 8C,8E
 MOV ss,ax
