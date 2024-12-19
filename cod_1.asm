@@ -1,10 +1,10 @@
-    .model small
+.model small
 .186
 .stack 100h
 .data
 B 		db 	1024 DUP(?)
 _COM 	db 	'com_1.com',0
-_VIVOD	db 	'vivod.asm',0
+_output	db 	'output.asm',0
 _DAS 	db 	9,'DAS',13,10,'$'
 _ROL	db	9,'ROL',9, 45 DUP (?)
 _MOV	db	9,'MOV',9, 45 DUP (?) 
@@ -28,70 +28,71 @@ start:
 	mov 	ds,ax
 	mov	es,ax
 
-	lea	dx,_COM	;открыть ком файл
+	lea	dx,_COM	
 	mov	ax,3d00h
 	int	21h
 	
-	mov	bx,ax	; считать ком файл
+	mov	bx,ax	
 	mov	ax,3f00h
 	mov	cx,1024d
 	lea	dx,b
 	int	21h
 
-	mov	ax,3e00h 	; закрыть ком файл
+	mov	ax,3e00h 	
 	int	21h
 	
-	lea	dx,_VIVOD	;создать файл для записи ответа
+	lea	dx,_output	
 	mov	ax,3c00h
 	mov	cx,2
 	int	21h
 
 	lea	si,b
-;---------------------------------------Считывание байта/Поиск команды
+
 	xor bp,bp
-nachalo:
+
+start_mark:
 	xor	ah,ah
 	lodsb
 	
 	cmp al,066h
 	jne n1
-	add bp,1 ;Переменная для отслеживания префиксов 66/67
-	jmp nachalo
+	add bp,1 
+	jmp start_mark
 n1:
 	cmp al,067h
 	jne n2
-	add bp,2 ;Переменная для отслеживания префиксов 66/67
-	jmp nachalo
-n2:      ;-------------------------Префиксы сегментов памяти
+	add bp,2 
+	jmp start_mark
+n2:      
 	cmp al,26h
 	jne n3
 	mov word ptr [temp_pref], 'SE'
-	jmp nachalo
+	jmp start_mark
 n3:
 	cmp al,02Eh
 	jne n4
 	mov word ptr [temp_pref], 'SC'
-	jmp nachalo
+	jmp start_mark
 n4:
 	cmp al,36h
 	jne n5
 	mov word ptr [temp_pref], 'SS'
-	jmp nachalo
+	jmp start_mark
 n5:
 	cmp al,3Eh
 	jne n6
 	mov word ptr [temp_pref], 'SD'
-	jmp nachalo
+	jmp start_mark
 n6:
 	cmp al,64h
 	jne n7
 	mov word ptr [temp_pref], 'SF'
-	jmp nachalo
+	jmp start_mark
 n7:
 	cmp al,65h
 	jne n8
 	mov word ptr [temp_pref], 'SG'
-	jmp nachalo
+	jmp start_mark
 n8:
 	cmp	al,2Fh
 	jnz n9
@@ -150,7 +151,7 @@ n16:
 	jmp	MOV_C6_C7
 n17:
 	jmp exit
-CHECK_ROL_D: ;-------------------------Блок для считывания команды ROL_D
+CHECK_ROL_D: 
 	mov [temp_di], al
 	cmp	al,0D4h
 	jna d1
@@ -175,11 +176,11 @@ d4:
 	mov [temp_cl],1
 	jmp ROL_D
 
-CHECK_MOV_B: ;-------------------------Блок для считвания команды MOV_B
+CHECK_MOV_B: 
 	lea bx,_MOV + 5
 	cmp al,0B8h
 	jae MOV_B8_BF
-	mov cl,0 ;Переменная отвечающая за разряднойсть регистров
+	mov cl,0 
 	
 	cmp al,0B0h
 	jne b1
@@ -213,7 +214,7 @@ b7:
 	jne b15
 	jmp MOV_B7
 MOV_B8_BF:
-	mov cl,1 ;Переменная отвечающая за разряднойсть регистров
+	mov cl,1 
 	cmp al,0B8h
 	jne b8
 	jmp MOV_B8
@@ -424,7 +425,7 @@ mem_pref_32:
 	
 	mov byte ptr [bx+1],'E'
 	mov word ptr [bx+2],'XA'
-	cmp byte ptr [sib_ind],0                  ;признак того что это SIB байт
+	cmp byte ptr [sib_ind],0             
 	mov di,4
 	je mm_1
 	jmp mem_sib1
@@ -437,7 +438,7 @@ mem_32_1:
 	
 	mov byte ptr [bx+1],'E'
 	mov word ptr [bx+2],'XC'
-	cmp byte ptr [sib_ind],0                  ;признак того что это SIB байт
+	cmp byte ptr [sib_ind],0                  
 	mov di,4
 	je mm_2
 	jmp mem_sib1
@@ -450,7 +451,7 @@ mem_32_2:
 	
 	mov byte ptr [bx+1],'E'
 	mov word ptr [bx+2],'XD'
-	cmp byte ptr [sib_ind],0                  ;признак того что это SIB байт
+	cmp byte ptr [sib_ind],0              
 	mov di,4
 	je mm_3
 	jmp mem_sib1
@@ -464,7 +465,7 @@ mem_32_3:
 	mov byte ptr [bx+1],'E'
 	mov word ptr [bx+2],'XB'
 	mov di,4
-	cmp byte ptr [sib_ind],0                  ;признак того что это SIB байт
+	cmp byte ptr [sib_ind],0             
 	je mm_4
 	jmp mem_sib1
 mm_4:
@@ -553,7 +554,7 @@ mem_32_6:
 	
 	mov byte ptr [bx+1],'E'
 	mov word ptr [bx+2],'IS'
-	cmp byte ptr [sib_ind],0                  ;признак того что это SIB байт
+	cmp byte ptr [sib_ind],0            
 	mov di,4
 	jne mem_sib1
 	mov cx,4
@@ -561,7 +562,7 @@ mem_32_6:
 mem_32_7:
 	mov byte ptr [bx+1],'E'
 	mov word ptr [bx+2],'ID'
-	cmp byte ptr [sib_ind],0                  ;признак того что это SIB байт
+	cmp byte ptr [sib_ind],0                
 	mov di,4
 	jne mem_sib1
 	mov cx,4
@@ -856,31 +857,20 @@ exit:
 	int	21h
 	mov	ah,4ch
 	int	21h
-vivod:
-	;mov	ah,09h
-	;int	21h
-	
-	;mov	ah,40h
-	;mov	bx,1
-	;int	21h
-	
-	;mov ah,08h 
-	;int 21h
-	
+output:
 	mov	ah,40h
-	mov bx,5
+	mov 	bx,5
 	int	21h
 
 	ret
-;--------------------------------------------DAS
+
 COM_DAS:
 	lea	dx,_DAS
 	mov	cx,6
-	call	vivod
+	call	output
 	
-	jmp	nachalo
+	jmp	start_mark
 
-;--------------------------------------------ROL
 	
 ROL_C:
 	lodsb
@@ -906,7 +896,7 @@ ROL_C_md11:
 	
 	and	al,7
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1                   
     call [jump_table + bx]
 	
 	lea bx,_ROL + 5
@@ -934,9 +924,9 @@ rc_reg8_16:
 	xor bp,bp
 	lea	dx,_ROL
 	
-	call vivod
+	call output
 	
-	jmp nachalo
+	jmp start_mark
 
 ROL_C_md10:
 	mov al, [temp_al]
@@ -1097,10 +1087,10 @@ rc_viv:
 	mov word ptr [sib_ind], 00000h
 	mov word ptr [temp_pref], 0h
 	
-	call vivod
+	call output
 
-	jmp	nachalo	
-;-----------------------------ROL_D	
+	jmp	start_mark	
+
 ROL_D:
 	lodsb
 	mov [temp_al], al
@@ -1124,7 +1114,7 @@ ROL_D_md11:
 	
 	and	al,7
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1                   ;
     call [jump_table + bx]
 	
 	lea	bx,_ROL + 5
@@ -1153,9 +1143,9 @@ rd_md_11_viv:
 	lea	dx,_ROL
 	xor bp,bp
 	
-	call vivod
+	call output
 
-	jmp	nachalo	
+	jmp	start_mark	
 ROL_D_md10:
 	mov al, [temp_al]
 	
@@ -1328,12 +1318,11 @@ rd_viv:
 	mov word ptr [sib_ind], 00000h
 	mov word ptr [temp_pref], 0h
 	
-	call vivod
+	call output
 
-	jmp	nachalo	
+	jmp	start_mark	
 	
-;-----------------------------------------MOV
-;-----------------------------------------MOV_B
+
 MOV_B0:
 	mov ax,'LA'
 	
@@ -1512,11 +1501,11 @@ mb_reg8:
 mb_viv:
 	lea	dx,_MOV
 	
-	call vivod
+	call output
 	
-	jmp	nachalo
+	jmp	start_mark
 
-;----------------------------------------MOV_A
+
 MOV_A0:
 	lea bx,_MOV + 5
 	mov [bx],"LA"
@@ -1544,9 +1533,9 @@ MOV_A0:
 	mov	cx,18
 	lea	dx,_MOV
 	
-	call vivod
+	call output
 	
-	jmp nachalo
+	jmp start_mark
 MOV_A1:
 	lea bx,_MOV + 5
 	test bp,1
@@ -1616,9 +1605,9 @@ ma_1_cont:
 	lea	dx,_MOV
 	xor bp,bp
 	
-	call vivod
+	call output
 	
-	jmp nachalo
+	jmp start_mark
 MOV_A2:
 	lea bx,_MOV + 5
 	
@@ -1647,9 +1636,9 @@ MOV_A2:
 	mov	cx,18
 	lea	dx,_MOV
 	
-	call vivod
+	call output
 	
-	jmp nachalo
+	jmp start_mark
 MOV_A3:
 	lea bx,_MOV + 5
 	mov byte ptr [bx], '['
@@ -1716,10 +1705,10 @@ ma2_reg16:
 	lea	dx,_MOV
 	xor bp,bp
 	
-	call vivod
+	call output
 	
-	jmp nachalo
-;------------------------------------------MOV_8
+	jmp start_mark
+
 MOV_88_89:
 	lodsb
 	
@@ -1745,7 +1734,7 @@ MOV_88_MOD_11:
 
 	and	al, 7h
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1                 
 	call [jump_table + bx]
 	
 	lea bx,_MOV + 5
@@ -1766,7 +1755,7 @@ mov_88_reg16:
 	and al, 038h
 	xor ah,ah
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1                  
     mov cl, byte ptr [temp_cl]
 	call [jump_table + bx]
 	
@@ -1780,9 +1769,9 @@ mov_88_reg16:
 	lea	dx,_MOV
 	xor bp,bp
 	
-	call vivod
+	call output
 	
-	jmp nachalo
+	jmp start_mark
 MOV_88_MOD_10:
 	mov al,[temp_al]
 	
@@ -1859,7 +1848,7 @@ mov_88_md10_disp_cont:
 	and al, 07h
 	xor ah,ah
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1      
 	call [jump_table + bx]
 	
 	mov bx, [temp_bx]
@@ -1913,7 +1902,7 @@ mov_88_md01_disp:
 	and al, 07h
 	xor ah,ah
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1         
     call [jump_table + bx]
 	
 	mov bx, [temp_bx]
@@ -1959,7 +1948,7 @@ mov_88_md00_disp:
 	and al, 07h
 	xor ah,ah
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1              
     call [jump_table + bx]
 	
 	mov bx,[temp_bx]
@@ -2003,7 +1992,7 @@ MOV_8A_MOD_11:
 	and	al, 038h
 	shr al, 3
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1                  
 	call [jump_table + bx]
 	
 	lea bx,_MOV + 5
@@ -2024,7 +2013,7 @@ mov_8A_reg16:
 	and al, 07h
 	xor ah,ah
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1            
 	call [jump_table + bx]
 	
 	mov bx, [temp_bx]
@@ -2037,9 +2026,9 @@ mov_8A_reg16:
 	lea	dx,_MOV
 	xor bp,bp
 	
-	call vivod
+	call output
 	
-	jmp nachalo
+	jmp start_mark
 MOV_8A_MOD_10:
 	mov al,[temp_di]
 	
@@ -2047,7 +2036,7 @@ MOV_8A_MOD_10:
 	and al, 07h
 	xor ah,ah
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1               
     call [jump_table + bx]
 	
 	lea	bx,_MOV + 5
@@ -2132,7 +2121,7 @@ MOV_8A_MOD_01:
 	and al, 07h
 	xor ah,ah
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1                 
     call [jump_table + bx]
 	
 	lea	bx,_MOV + 5
@@ -2182,7 +2171,7 @@ MOV_8A_MOD_00:
 	and al, 07h
 	xor ah,ah
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1                
     call [jump_table + bx]
 	
 	lea	bx,_MOV + 5
@@ -2242,7 +2231,7 @@ MOV_8C_MOD_11:
 	and al, 07h
 	xor ah,ah
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1                   
 	call [jump_table + bx]
 
 	
@@ -2259,7 +2248,7 @@ MOV_8C_MOD_11:
 	xor ah,ah
 	shr al, 3
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1                 
 	call [seg_table + bx]
 	
 	mov bx, [temp_bx]
@@ -2272,9 +2261,9 @@ MOV_8C_MOD_11:
 	lea	dx,_MOV
 	xor bp,bp
 	
-	call vivod
+	call output
 	
-	jmp nachalo
+	jmp start_mark
 MOV_8C_MOD_10:
 	mov al,[temp_al]
 	
@@ -2351,7 +2340,7 @@ mov_8C_md10_disp_cont:
 	and al, 07h
 	xor ah,ah
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1                  
 	call [seg_table + bx]
 	
 	mov bx, [temp_bx]
@@ -2398,7 +2387,7 @@ mov_8C_md01_disp:
 	and al, 07h
 	xor ah,ah
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1                 
     call [seg_table + bx]
 	
 	mov bx, [temp_bx]
@@ -2438,7 +2427,7 @@ mov_8C_md00_disp:
 	xor ah,ah
 	shr al, 3
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1                 
     call [seg_table + bx]
 	
 	mov bx,[temp_bx]
@@ -2477,7 +2466,7 @@ MOV_8E_MOD_11:
 	xor ah,ah
 	shr al, 3
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1                   
 	call [seg_table + bx]
 	
 	lea bx,_MOV + 5
@@ -2492,7 +2481,7 @@ MOV_8E_MOD_11:
 	and al, 07h
 	xor ah,ah
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1                  
 	call [jump_table + bx]
 	
 	mov bx, [temp_bx]
@@ -2505,9 +2494,9 @@ MOV_8E_MOD_11:
 	lea	dx,_MOV
 	xor bp,bp
 	
-	call vivod
+	call output
 	
-	jmp nachalo
+	jmp start_mark
 MOV_8E_MOD_10:
 	mov al, [temp_al]
 	
@@ -2515,7 +2504,7 @@ MOV_8E_MOD_10:
 	xor ah,ah
 	shr al, 3
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1         
 	call [seg_table + bx]
 	
 	lea bx,_MOV + 5
@@ -2596,7 +2585,7 @@ MOV_8E_MOD_01:
 	xor ah,ah
 	shr al, 3
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1   
 	call [seg_table + bx]
 	
 	lea bx,_MOV + 5
@@ -2638,7 +2627,7 @@ MOV_8E_MOD_00:
 	xor ah,ah
 	shr al, 3
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1        
 	call [seg_table + bx]
 	
 	lea bx,_MOV + 5
@@ -2676,10 +2665,10 @@ mov_8_viv:
 	mov word ptr [sib_ind], 00000h
 	mov word ptr [temp_pref], 0h
 	
-	call vivod
+	call output
 
-	jmp	nachalo	
-;-----------------------------------------------MOV_C
+	jmp	start_mark	
+
 MOV_C6_C7:	
 	lodsb
 	
@@ -2703,7 +2692,7 @@ MOV_C_MOD_11:
 	
 	and	al,7
 	mov bx, ax
-    shl bx, 1                   ; Умножаем на 2, так как каждый адрес занимает 2 байта
+    shl bx, 1                  
     call [jump_table + bx]
 	
 	lea bx,_MOV + 5
@@ -2724,9 +2713,9 @@ mov_c_reg8_16:
 	add cx, 5
 	lea	dx,_MOV
 	
-	call vivod
+	call output
 	
-	jmp nachalo
+	jmp start_mark
 
 MOV_C_MOD_10:
 	mov al, [temp_al]
@@ -2863,7 +2852,7 @@ mov_c_viv:
 	mov word ptr [sib_ind], 00000h
 	mov word ptr [temp_pref], 0h
 	
-	call vivod
+	call output
 
-	jmp	nachalo	
+	jmp	start_mark	
 end start
