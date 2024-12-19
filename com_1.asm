@@ -7,7 +7,6 @@ B dw 1234h
 org 100h   
 start:
 DAS
-;//////////////////////Случайные проверки
 MOV [EAX+EBP*2], AL
 MOV ss:[EAX+EBP*2], AL
 MOV [ESP], AL
@@ -62,8 +61,7 @@ MOV EAX,[EAX+10h]
 	db	088h,0C2h	;MOV dl,al
 	db	088h,037h	;MOV [BX],DH 
 MOV [BX], AL
-;//////////////////////
-;//////////////////////Проверка на регистры с ROL
+
 ROL AL, 1h
 ROL CL, 1h
 ROL DL, 1h
@@ -144,8 +142,7 @@ ROL ESP, 17h
 ROL EBP, 17h
 ROL ESI, 17h
 ROL EDI, 17h
-;//////////////////////
-;//////////////////////Проверка на byte/word/dword ptr с ROL
+
 ROL byte ptr [BX], 1h
 ROL word ptr [BX], 1h
 ROL dword ptr [BX], 1h
@@ -157,8 +154,7 @@ ROL dword ptr [BX], CL
 ROL byte ptr [BX], 10h
 ROL word ptr [BX], 10h
 ROL dword ptr [BX], 10h
-;//////////////////////
-;//////////////////////Проверка на 16-ти разрядную память с ROL
+
 ROL byte ptr [BX+SI], 1h
 ROL byte ptr [BX+DI], 1h
 ROL byte ptr [BP+SI], 1h
@@ -239,8 +235,7 @@ ROL byte ptr [SI+0C8C7h], 15h
 ROL byte ptr [DI+0C8C7h], 15h
 ROL byte ptr [BP+0C8C7h], 15h
 ROL byte ptr [BX+0C8C7h], 15h
-;//////////////////////
-;//////////////////////Проверка на сегменты памяти с ROL
+
 ROL byte ptr ds:[BX], 1h
 ROL byte ptr ss:[BX], 1h
 ROL byte ptr cs:[BX], 1h
@@ -254,8 +249,7 @@ ROL byte ptr cs:[BX], 15h
 ROL byte ptr es:[BX], 15h
 ROL word ptr fs:[BX], 15h
 ROL dword ptr gs:[BX], 15h
-;//////////////////////
-;//////////////////////Проверка MOV с опкодом B0-BF
+
 MOV AL, 0B0h
 MOV CL, 0B1h
 MOV DL, 0B2h
@@ -282,8 +276,7 @@ MOV ESP, 0BC000000h
 MOV EBP, 0BD000000h
 MOV ESI, 0BE000000h
 MOV EDI, 0BF000000h
-;//////////////////////
-;//////////////////////Проверка MOV с опкодом A0-A3
+
 	db	0A1h,8h,10h ;MOV AX, word ptr [1008h]
 	db	067h,0A1h,8h,10h,00h,00h ;MOV AX, word ptr [1008h]
 	db	066h,067h,0A1h,8h,10h,00h,00h ;MOV AX, word ptr [1008h]
@@ -293,8 +286,7 @@ MOV EDI, 0BF000000h
 	db	066h,0A3h,6h,10h ;MOV dword ptr [1006h], EAX
 	db	066h,067h,0A3h,6h,10h,00h,00h	;MOV dword ptr [1006h], EAX
 	db	067h,0A3h,6h,10h,00h,00h	;MOV dword ptr [1006h], EAX
-;//////////////////////
-;//////////////////////Проверка MOV с опкодом C6-C7
+
 MOV byte ptr [BX], 10h
 MOV word ptr [BX], 1000h
 MOV dword ptr [BX], 10000000h
@@ -306,8 +298,7 @@ MOV dword ptr [EAX], 0C2000000h
 MOV EAX,10090807h
 MOV AL, 5
 	db	0C6h,0C0h,00h	;MOV al,0
-;//////////////////////
-;//////////////////////Проверка на байт SIB с ROL
+
 ROL	word ptr [EAX+ECX*2+10h], 15h
 ROL	word ptr [ECX+ECX*4+10h], 15h
 ROL	word ptr [EDX+ECX*8+10h], 15h
@@ -322,13 +313,11 @@ ROL dword ptr [EBP+10h+EBX], 10h
 ROL word ptr [ESP+10h+EBX], 10h
 ROL word ptr [EBP+10h+EBX], 1h
 ROL word ptr [EBP+10h+EBX], CL
-;//////////////////////
-;//////////////////////Проверка на MOV с опкодом 8C,8E
+
 MOV ss,ax
 MOV ss,[bx]
 MOV SS,[EBX+10]
 MOV ax,ss
 MOV [bx], ss
 MOV [EBX+10], SS
-;//////////////////////
 end start
